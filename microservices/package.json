@@ -1,0 +1,13 @@
+{
+  "name": "tdse-twitterlike-microservices",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "services/*"
+  ],
+  "scripts": {
+    "test": "echo \"No automated tests configured for Lambda layer yet\"",
+    "lint": "echo \"Add eslint if needed\""
+  }
+}

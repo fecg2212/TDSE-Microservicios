@@ -1,0 +1,21 @@
+# Java
+**/target/
+**/.mvn/
+
+# Node
+**/node_modules/
+**/dist/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Env files
+**/.env
+**/.env.local
+**/.env.*.local
+
+# AWS/SAM build artifacts
+**/.aws-sam/

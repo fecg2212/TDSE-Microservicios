@@ -1,0 +1,113 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: TDSE Twitter-like microservices with Auth0 and API Gateway
+
+Globals:
+  Function:
+    Runtime: nodejs20.x
+    Timeout: 10
+    MemorySize: 256
+    Environment:
+      Variables:
+        AUTH0_ISSUER_URI: !Ref Auth0IssuerUri
+        AUTH0_AUDIENCE: !Ref Auth0Audience
+        POSTS_TABLE: !Ref PostsTable
+        USERS_TABLE: !Ref UsersTable
+
+Parameters:
+  Auth0IssuerUri:
+    Type: String
+    Description: Auth0 issuer URI, e.g. https://YOUR-DOMAIN.auth0.com/
+  Auth0Audience:
+    Type: String
+    Description: Auth0 API audience
+
+Resources:
+  PostsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: userId
+          AttributeType: S
+      KeySchema:
+        - AttributeName: userId
+          KeyType: HASH
+
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      CorsConfiguration:
+        AllowMethods:
+          - GET
+          - POST
+          - OPTIONS
+        AllowHeaders:
+          - Content-Type
+          - Authorization
+        AllowOrigins:
+          - '*'
+
+  PostsServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: services/posts-service/
+      Handler: handler.createPost
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref PostsTable
+      Events:
+        CreatePost:
+          Type: HttpApi
+          Properties:
+            Path: /posts
+            Method: POST
+            ApiId: !Ref HttpApi
+
+  StreamServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: services/stream-service/
+      Handler: handler.getStream
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref PostsTable
+      Events:
+        GetStream:
+          Type: HttpApi
+          Properties:
+            Path: /stream
+            Method: GET
+            ApiId: !Ref HttpApi
+
+  UserServiceFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: services/user-service/
+      Handler: handler.getMe
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        GetMe:
+          Type: HttpApi
+          Properties:
+            Path: /me
+            Method: GET
+            ApiId: !Ref HttpApi
+
+Outputs:
+  ApiBaseUrl:
+    Value: !Sub https://${HttpApi}.execute-api.${AWS::Region}.amazonaws.com
+    Description: Base URL for deployed microservices

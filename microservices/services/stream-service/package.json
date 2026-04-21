@@ -1,0 +1,10 @@
+{
+  "name": "stream-service",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "handler.js",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.726.1",
+    "@aws-sdk/lib-dynamodb": "^3.726.1"
+  }
+}

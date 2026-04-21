@@ -1,0 +1,22 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: twitter-like-monolith
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH0_ISSUER_URI:https://YOUR-DOMAIN.auth0.com/}
+
+auth0:
+  audience: ${AUTH0_AUDIENCE:https://api.tdse-twitterlike}
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+logging:
+  level:
+    org.springframework.security: INFO

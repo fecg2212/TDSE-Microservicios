@@ -1,0 +1,9 @@
+{
+  "name": "@tdse/shared",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "auth.js",
+  "dependencies": {
+    "jose": "^5.8.0"
+  }
+}
