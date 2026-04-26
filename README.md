@@ -276,3 +276,9 @@ Git branch created for this work:
 - `Feature-Microservicio`
 
 Note: Git branch names with spaces are not recommended; this implementation uses a hyphenated equivalent.
+
+
+AUTORES
+Juan Miguel Rojas
+Felipe Calvache
+David Eduardo Salamanca
